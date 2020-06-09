@@ -125,12 +125,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void wcisnietoLiczbe(String cyfra){
         try{
-            if ((editText.getText().length() < 12) || ((plus || minus || div || multi) && coAktualnie == 0d)) {
-                if (!czyJuzWypisanoRezultat) {
-                    if (coAktualnie == 0d) {
-                        if (rezultat == 0d) {
-                            rezultat = Double.parseDouble(cyfra);
-                            editText.setText(cyfra);
+
+                if (!czyJuzWypisanoRezultat)
+                {
+                    if (coAktualnie == 0d)
+                    {
+                        if (rezultat == 0d)
+                        {
+                            String aktualnaLiczba = format(Double.parseDouble(cyfra));
+                            rezultat = Double.parseDouble(aktualnaLiczba);
+                            editText.setText(aktualnaLiczba);
                         }
                         else
                         {
@@ -140,30 +144,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             editText.setText(aktualnaLiczba);
                         }
                     }
-                    else {
-                        if (!equal) {
-                            String aktualnaLiczba = format(coAktualnie);
-                            aktualnaLiczba += cyfra;
-                            coAktualnie = Double.parseDouble(aktualnaLiczba);
-                            editText.setText(aktualnaLiczba);
-                        }
-                        else
-                        {
-                            coAktualnie = 0d;
-                            rezultat = Double.parseDouble(cyfra);
-                            editText.setText(fmt(rezultat));
-                            equal = false;
-                        }
+                    else
+                    {
+                        String aktualnaLiczba = format(coAktualnie);
+                        aktualnaLiczba += cyfra;
+                        coAktualnie = Double.parseDouble(aktualnaLiczba);
+                        editText.setText(aktualnaLiczba);
                     }
                 }
                 else
                 {
-                    coAktualnie = Double.parseDouble(cyfra);
-                    editText.setText(fmt(coAktualnie));
+                    if (equal)
+                    {
+                        coAktualnie = 0d;
+                        String aktualnaLiczba = fmt(Double.parseDouble(cyfra));
+                        rezultat = Double.parseDouble(aktualnaLiczba);
+                        editText.setText(aktualnaLiczba);
+                        equal = false;
+                    }
+                    else
+                    {
+                        coAktualnie = Double.parseDouble(cyfra);
+                        editText.setText(fmt(coAktualnie));
+                    }
+
                     czyJuzWypisanoRezultat = false;
                 }
 
-            }
+
         }
         catch(Exception e){}
     }
@@ -179,25 +187,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void wykonajDzialanie(){
 
-            if (plus){
+            if (plus)
+            {
                 rezultat += coAktualnie;
                 coAktualnie = 0d;
             }
-            if (minus){
+            if (minus)
+            {
                 rezultat -= coAktualnie;
                 coAktualnie = 0d;
             }
-            if (div){
+            if (div)
+            {
                 if (coAktualnie != 0d) {
                     rezultat /= coAktualnie;
                     coAktualnie = 0d;
                 }
-                else{
-                    nieMoznaDzielicPrzezZero();
+                else
+                {
                     czySprobowanoPodzielicPrzez0 = true;
                 }
             }
-            if (multi){
+            if (multi)
+            {
                 rezultat *= coAktualnie;
                 coAktualnie = 0d;
             }
@@ -205,13 +217,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void wykonajOperacje(){
-        if (!czyJuzWypisanoRezultat){
+        if (!czyJuzWypisanoRezultat)
+        {
             wykonajDzialanie();
             if (!czySprobowanoPodzielicPrzez0) {
                 editText.setText(fmt(rezultat));
                 czyJuzWypisanoRezultat = true;
             }
-            else{
+            else
+            {
+                nieMoznaDzielicPrzezZero();
                 czySprobowanoPodzielicPrzez0 = false;
             }
         }
@@ -280,13 +295,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 multi = true;
             break;
             case R.id.btnEqual:
-                wykonajDzialanie();
-                if(!czySprobowanoPodzielicPrzez0){
-                    coAktualnie = rezultat;
-                    editText.setText(fmt(rezultat));
-                }
+                wykonajDzialanie(); //tu juz mamy okreslony rezultat czyli np 10/2 = 5
+                coAktualnie = 0d;
+                editText.setText(fmt(rezultat));
                 zgasWszystkieDzialania();
-                czyJuzWypisanoRezultat = false;
+                czyJuzWypisanoRezultat = true;
                 equal = true;
             break;
 
@@ -386,15 +399,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             break;
 
             case R.id.btnComma:
-               if (!editText.getText().toString().contains(".")){
+                if (czyJuzWypisanoRezultat){
+                    skasujWszystko();
+                }
+
+                if (!editText.getText().toString().contains(".")){
                    editText.setText(editText.getText()+".");
-               }
+                }
             break;
 
         }
     }
 
     private void skasujWszystko(){
+        czyJuzWypisanoRezultat = false;
+        czySprobowanoPodzielicPrzez0 = false;
         zgasWszystkieDzialania();
         coAktualnie = 0d;
         rezultat = 0d;
