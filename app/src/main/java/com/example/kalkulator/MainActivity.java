@@ -9,33 +9,29 @@ import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button btn1,btn2,btn3,btn4,btn5,btn6,btn7,btn8,btn9,btn0;
-    Button btnPerc, btnC, btnCE, btnDelete, btn1x, btnPow, btnSqrt, btnDiv, btnMulti, btnMinus, btnPlus, btnEqual, btnComma;
-    Button btnMminus, btnMC, btnMS, btnMR, btnMplus;
-    EditText editText;
-    Boolean plus, minus, multi, div, equal;
-    Boolean czyJuzWypisanoRezultat = false;
-    Boolean czySprobowanoPodzielicPrzez0 = false;
-    Double rezultat;
-    Double coAktualnie;
+    private Button btn1,btn2,btn3,btn4,btn5,btn6,btn7,btn8,btn9,btn0;
+    private Button btnPerc, btnC, btnCE, btnDelete, btn1x, btnPow, btnSqrt, btnDiv, btnMulti, btnMinus, btnPlus, btnEqual, btnComma;
+    private Button btnMminus, btnMC, btnMS, btnMR, btnMplus;
+    private EditText editText;
+    private Boolean plus, minus, multi, div, equal;
+    private Boolean czyJuzWypisanoRezultat;
+    private Boolean czySprobowanoPodzielicPrzez0;
+    private Boolean czyAktualnyZPrzecinkiem;
+    private Boolean czyPrzyciskiSaWylaczone;
+    private Double rezultat, coAktualnie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        zgasWszystkieDzialania();
-        rezultat = 0d;
-        coAktualnie = 0d;
-
         findByView();
         setOnClickButtons();
+        skasujWszystko();
     }
 
 
-    public void findByView(){
+    private void findByView(){
         editText = findViewById(R.id.editText);
-        editText.setText("0");
 
         btn0 = findViewById(R.id.btn0);
         btn1 = findViewById(R.id.btn1);
@@ -70,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    public void setOnClickButtons(){
+    private void setOnClickButtons(){
 
         btn0.setOnClickListener(this);
         btn1.setOnClickListener(this);
@@ -104,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnMR.setOnClickListener(this);
     }
 
-    public String format(double d){
+    private String format(double d){
         if(editText.getText().toString().contains(".")){
             return editText.getText().toString();
         }
@@ -114,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    public static String fmt(double d)
+    private String fmt(double d)
     {
         if(d == (int) d)
             return String.format("%d",(int)d);
@@ -123,61 +119,64 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    public void wcisnietoLiczbe(String cyfra){
+    private void wcisnietoLiczbe(String cyfra){
         try{
-
-                if (!czyJuzWypisanoRezultat)
+            if (!czyJuzWypisanoRezultat)
+            {
+                if (coAktualnie == 0d)
                 {
-                    if (coAktualnie == 0d)
+                    if (rezultat == 0d && !editText.getText().toString().contains("."))
                     {
-                        if (rezultat == 0d)
-                        {
-                            String aktualnaLiczba = format(Double.parseDouble(cyfra));
-                            rezultat = Double.parseDouble(aktualnaLiczba);
-                            editText.setText(aktualnaLiczba);
-                        }
-                        else
-                        {
-                            String aktualnaLiczba = format(rezultat);
-                            aktualnaLiczba += cyfra;
-                            rezultat = Double.parseDouble(aktualnaLiczba);
-                            editText.setText(aktualnaLiczba);
-                        }
+                        String aktualnaLiczba = format(Double.parseDouble(cyfra));
+                        rezultat = Double.parseDouble(aktualnaLiczba);
+                        editText.setText(aktualnaLiczba);
                     }
                     else
                     {
-                        String aktualnaLiczba = format(coAktualnie);
+                        String aktualnaLiczba = format(rezultat);
                         aktualnaLiczba += cyfra;
-                        coAktualnie = Double.parseDouble(aktualnaLiczba);
                         editText.setText(aktualnaLiczba);
+                        if((editText.getText().toString().contains(".")) && (plus || minus || div || multi)){
+                            czyAktualnyZPrzecinkiem = true;
+                        }
+                        else
+                        {
+                            rezultat = Double.parseDouble(aktualnaLiczba);
+                        }
                     }
                 }
                 else
                 {
-                    if (equal)
-                    {
-                        coAktualnie = 0d;
-                        String aktualnaLiczba = fmt(Double.parseDouble(cyfra));
-                        rezultat = Double.parseDouble(aktualnaLiczba);
-                        editText.setText(aktualnaLiczba);
-                        equal = false;
-                    }
-                    else
-                    {
-                        coAktualnie = Double.parseDouble(cyfra);
-                        editText.setText(fmt(coAktualnie));
-                    }
-
-                    czyJuzWypisanoRezultat = false;
+                    String aktualnaLiczba = format(coAktualnie);
+                    aktualnaLiczba += cyfra;
+                    coAktualnie = Double.parseDouble(aktualnaLiczba);
+                    editText.setText(aktualnaLiczba);
+                }
+            }
+            else
+            {
+                if (equal)
+                {
+                    coAktualnie = 0d;
+                    String aktualnaLiczba = fmt(Double.parseDouble(cyfra));
+                    rezultat = Double.parseDouble(aktualnaLiczba);
+                    editText.setText(aktualnaLiczba);
+                    equal = false;
+                }
+                else
+                {
+                    coAktualnie = Double.parseDouble(cyfra);
+                    editText.setText(fmt(coAktualnie));
                 }
 
-
+                czyJuzWypisanoRezultat = false;
+            }
         }
-        catch(Exception e){}
+        catch(Exception ignored){}
     }
 
 
-    public void zgasWszystkieDzialania(){
+    private void zgasWszystkieDzialania(){
         plus = false;
         minus = false;
         multi = false;
@@ -185,7 +184,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         equal = false;
     }
 
-    public void wykonajDzialanie(){
+    private void wykonajDzialanie(){
+            if (czyAktualnyZPrzecinkiem){
+                coAktualnie = Double.parseDouble(editText.getText().toString());
+                czyAktualnyZPrzecinkiem = false;
+            }
 
             if (plus)
             {
@@ -199,7 +202,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             if (div)
             {
-                if (coAktualnie != 0d) {
+                if (coAktualnie != 0d)
+                {
                     rezultat /= coAktualnie;
                     coAktualnie = 0d;
                 }
@@ -216,28 +220,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    public void wykonajOperacje(){
+    private void wykonajOperacje(){
         if (!czyJuzWypisanoRezultat)
         {
             wykonajDzialanie();
-            if (!czySprobowanoPodzielicPrzez0) {
-                editText.setText(fmt(rezultat));
-                czyJuzWypisanoRezultat = true;
-            }
-            else
-            {
-                nieMoznaDzielicPrzezZero();
-                czySprobowanoPodzielicPrzez0 = false;
-            }
+        }
+        if (!czySprobowanoPodzielicPrzez0) {
+            editText.setText(fmt(rezultat));
+            czyJuzWypisanoRezultat = true;
+        }
+        else
+        {
+            nieMoznaDzielicPrzezZero();
+            czySprobowanoPodzielicPrzez0 = false;
         }
     }
 
-    private static String removeLastChar(String str) {
+    private String removeLastChar(String str) {
         return str.substring(0, str.length() - 1);
     }
 
     @Override
     public void onClick(View v) {
+        if(czyPrzyciskiSaWylaczone){
+            wlaczLubWylaczPrzyciski(true);
+            czyPrzyciskiSaWylaczone = false;
+        }
 
         switch (v.getId()){
             case R.id.btn1:
@@ -295,12 +303,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 multi = true;
             break;
             case R.id.btnEqual:
-                wykonajDzialanie(); //tu juz mamy okreslony rezultat czyli np 10/2 = 5
-                coAktualnie = 0d;
-                editText.setText(fmt(rezultat));
-                zgasWszystkieDzialania();
-                czyJuzWypisanoRezultat = true;
-                equal = true;
+                wykonajDzialanie();
+                if (!czySprobowanoPodzielicPrzez0) {
+                    editText.setText(fmt(rezultat));
+                    czyJuzWypisanoRezultat = true;
+                    equal = true;
+                    coAktualnie = 0d;
+                    zgasWszystkieDzialania();
+                }
+                else
+                {
+                    nieMoznaDzielicPrzezZero();
+                    czySprobowanoPodzielicPrzez0 = false;
+                }
             break;
 
             case R.id.btnC:
@@ -345,12 +360,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             rezultat = Double.parseDouble(poUsunieciuOstatniegoZnaku.replace(".",""));
                         }
                     }
-                    else if(!editText.getText().toString().contains("E"))
+                    else //if(!editText.getText().toString().contains("E"))
                     {
                         skasujWszystko();
                     }
 
-                }catch (Exception e){}
+                }catch (Exception ignored){}
 
             break;
 
@@ -414,6 +429,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void skasujWszystko(){
         czyJuzWypisanoRezultat = false;
         czySprobowanoPodzielicPrzez0 = false;
+        czyAktualnyZPrzecinkiem = false;
+        czyPrzyciskiSaWylaczone = false;
         zgasWszystkieDzialania();
         coAktualnie = 0d;
         rezultat = 0d;
@@ -421,14 +438,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void nieMoznaDzielicPrzezZero(){
+        skasujWszystko();
         editText.setText("Nie można dzielić przez zero");
-        rezultat = 0d;
-        coAktualnie = 0d;
+        wlaczLubWylaczPrzyciski(false);
+    }
+
+
+    public void wlaczLubWylaczPrzyciski(boolean onOFF){
+        czyPrzyciskiSaWylaczone = !onOFF;
+        btnPerc.setEnabled(onOFF);
+        btn1x.setEnabled(onOFF);
+        btnComma.setEnabled(onOFF);
+        btnPow.setEnabled(onOFF);
+        btnSqrt.setEnabled(onOFF);
+        btnDiv.setEnabled(onOFF);
+        btnMulti.setEnabled(onOFF);
+        btnMinus.setEnabled(onOFF);
+        btnPlus.setEnabled(onOFF);
+        btnMinus.setEnabled(onOFF);
+        btnMminus.setEnabled(onOFF);
+        btnPlus.setEnabled(onOFF);
+        btnMplus.setEnabled(onOFF);
+        btnMC.setEnabled(onOFF);
+        btnMS.setEnabled(onOFF);
+        btnMR.setEnabled(onOFF);
     }
 
     private boolean czyZawieraLiczboweZnaki(){
         return  !editText.getText().toString().equals("Infinity") &&
-                !editText.getText().toString().contains("E") &&
+                //!editText.getText().toString().contains("E") &&
                 !editText.getText().toString().equals("Nie można dzielić przez zero");
     }
 
