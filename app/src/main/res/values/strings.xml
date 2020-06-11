@@ -1,3 +1,30 @@
 <resources>
     <string name="app_name">Kalkulator</string>
+    <string name="c">C</string>
+    <string name="_1_x">1/x</string>
+    <string name="procent">%</string>
+    <string name="pierwiastek">√x</string>
+    <string name="dzielenie">÷</string>
+    <string name="_7">7</string>
+    <string name="_8">8</string>
+    <string name="_9">9</string>
+    <string name="mnozenie">*</string>
+    <string name="_4">4</string>
+    <string name="_5">5</string>
+    <string name="_6">6</string>
+    <string name="odejmowanie">-</string>
+    <string name="_1">1</string>
+    <string name="_2">2</string>
+    <string name="_3">3</string>
+    <string name="dodawanie">+</string>
+    <string name="negacja">+/-</string>
+    <string name="_0">0</string>
+    <string name="kropka">.</string>
+    <string name="rownosc">=</string>
+    <string name="ce">CE</string>
+    <string name="mminus">M-</string>
+    <string name="mplus">M+</string>
+    <string name="ms">MS</string>
+    <string name="mr">MR</string>
+    <string name="mc">MC</string>
 </resources>

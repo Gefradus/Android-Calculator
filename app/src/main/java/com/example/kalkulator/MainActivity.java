@@ -5,15 +5,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button btn1,btn2,btn3,btn4,btn5,btn6,btn7,btn8,btn9,btn0;
-    private Button btnPerc, btnC, btnCE, btnDelete, btn1x, btnPow, btnSqrt, btnDiv, btnMulti, btnMinus, btnPlus, btnEqual, btnComma;
+    private Button btnPerc, btnC, btnCE, btn1x, btnSqrt, btnDiv, btnMulti, btnMinus, btnPlus, btnEqual, btnComma;
+    private ImageButton btnDelete;
     private Button btnMminus, btnMC, btnMS, btnMR, btnMplus;
     private EditText editText;
-    private Boolean plus, minus, multi, div, equal, oneX;
+    private Boolean plus, minus, multi, div, equal, oneX, percent;
     private Boolean czyJuzWypisanoRezultat;
     private Boolean czySprobowanoPodzielicPrzez0;
     private Boolean czyAktualnyZPrzecinkiem;
@@ -32,7 +34,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void findByView(){
         editText = findViewById(R.id.editText);
-
         btn0 = findViewById(R.id.btn0);
         btn1 = findViewById(R.id.btn1);
         btn2 = findViewById(R.id.btn2);
@@ -49,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnC = findViewById(R.id.btnC);
         btnComma = findViewById(R.id.btnComma);
         btnDelete = findViewById(R.id.btnDelete);
-        btnPow = findViewById(R.id.btnPow);
         btnSqrt = findViewById(R.id.btnSqrt);
         btnDiv = findViewById(R.id.btnDiv);
         btnMulti = findViewById(R.id.btnMulti);
@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void setOnClickButtons(){
-
         btn0.setOnClickListener(this);
         btn1.setOnClickListener(this);
         btn2.setOnClickListener(this);
@@ -84,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnC.setOnClickListener(this);
         btnComma.setOnClickListener(this);
         btnDelete.setOnClickListener(this);
-        btnPow.setOnClickListener(this);
         btnSqrt.setOnClickListener(this);
         btnDiv.setOnClickListener(this);
         btnMulti.setOnClickListener(this);
@@ -121,15 +119,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void wcisnietoLiczbe(String cyfra){
         try{
+            String aktualnyNapis = editText.getText().toString();
+            Double aktualnyRezultat = rezultat;
+            Double aktualneCoAktualnie = coAktualnie;
+
             if (!czyJuzWypisanoRezultat)
             {
                 if (coAktualnie == 0d)
                 {
                     if (rezultat == 0d && !editText.getText().toString().contains("."))
                     {
-                        String aktualnaLiczba = format(Double.parseDouble(cyfra));
-                        rezultat = Double.parseDouble(aktualnaLiczba);
-                        editText.setText(aktualnaLiczba);
+                        wypiszRezultat(cyfra);
                     }
                     else
                     {
@@ -158,9 +158,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (equal)
                 {
                     coAktualnie = 0d;
-                    String aktualnaLiczba = fmt(Double.parseDouble(cyfra));
-                    rezultat = Double.parseDouble(aktualnaLiczba);
-                    editText.setText(aktualnaLiczba);
+                    wypiszRezultat(cyfra);
                     equal = false;
                 }
                 else
@@ -171,12 +169,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 if (oneX){
                     skasujWszystko();
+                    wypiszRezultat(cyfra);
                 }
 
                 czyJuzWypisanoRezultat = false;
             }
+
+            sprawdzCzyNieZaDlugi(aktualnyNapis, aktualnyRezultat, aktualneCoAktualnie);
+
         }
         catch(Exception ignored){}
+    }
+
+    private void wypiszRezultat(String cyfra){
+        String aktualnaLiczba = format(Double.parseDouble(cyfra));
+        rezultat = Double.parseDouble(aktualnaLiczba);
+        editText.setText(aktualnaLiczba);
     }
 
 
@@ -187,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         div = false;
         equal = false;
         oneX  = false;
+        percent = false;
     }
 
     private void wykonajDzialanie(){
@@ -255,58 +264,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         switch (v.getId()){
-            case R.id.btn1:
-                wcisnietoLiczbe("1");
-            break;
-            case R.id.btn2:
-                wcisnietoLiczbe("2");
-            break;
-            case R.id.btn3:
-                wcisnietoLiczbe("3");
-            break;
-            case R.id.btn4:
-                wcisnietoLiczbe("4");
-            break;
-            case R.id.btn5:
-                wcisnietoLiczbe("5");
-            break;
-            case R.id.btn6:
-                wcisnietoLiczbe("6");
-            break;
-            case R.id.btn7:
-                wcisnietoLiczbe("7");
-            break;
-            case R.id.btn8:
-                wcisnietoLiczbe("8");
-            break;
-            case R.id.btn9:
-                wcisnietoLiczbe("9");
-            break;
-            case R.id.btn0:
-                wcisnietoLiczbe("0");
-            break;
+            case R.id.btn1: wcisnietoLiczbe("1"); break;
+            case R.id.btn2: wcisnietoLiczbe("2"); break;
+            case R.id.btn3: wcisnietoLiczbe("3"); break;
+            case R.id.btn4: wcisnietoLiczbe("4"); break;
+            case R.id.btn5: wcisnietoLiczbe("5"); break;
+            case R.id.btn6: wcisnietoLiczbe("6"); break;
+            case R.id.btn7: wcisnietoLiczbe("7"); break;
+            case R.id.btn8: wcisnietoLiczbe("8"); break;
+            case R.id.btn9: wcisnietoLiczbe("9"); break;
+            case R.id.btn0: wcisnietoLiczbe("0"); break;
             case R.id.btnPlus:
-                wykonajOperacje();
-                zgasWszystkieDzialania();
-                czyJuzWypisanoRezultat = true;
+                dzialanieArytmetyczne();
                 plus = true;
             break;
             case R.id.btnMinus:
-                wykonajOperacje();
-                zgasWszystkieDzialania();
-                czyJuzWypisanoRezultat = true;
+                dzialanieArytmetyczne();
                 minus = true;
             break;
             case R.id.btnDiv:
-                wykonajOperacje();
-                zgasWszystkieDzialania();
-                czyJuzWypisanoRezultat = true;
+                dzialanieArytmetyczne();
                 div = true;
             break;
             case R.id.btnMulti:
-                wykonajOperacje();
-                zgasWszystkieDzialania();
-                czyJuzWypisanoRezultat = true;
+                dzialanieArytmetyczne();
                 multi = true;
             break;
             case R.id.btnEqual:
@@ -330,112 +311,166 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             break;
 
             case R.id.btnCE:
-                if(plus || minus || div || multi){
-                    coAktualnie = 0d;
-                }
-                else {
-                    rezultat = 0d;
-                }
-                editText.setText("0");
+                ce();
             break;
 
             case R.id.btnDelete:
-                try{
-                    if (czyZawieraLiczboweZnaki()){
-                        String poUsunieciuOstatniegoZnaku;
-
-                        if (!equal){
-                            if (editText.getText().toString().length() > 1){
-                                poUsunieciuOstatniegoZnaku = removeLastChar(editText.getText().toString());
-                            }
-                            else
-                            {
-                                poUsunieciuOstatniegoZnaku = "0";
-                            }
-
-                            if (multi || div || plus || minus){
-                                coAktualnie = Double.parseDouble(poUsunieciuOstatniegoZnaku);
-                                if (!czyJuzWypisanoRezultat){
-                                    editText.setText(poUsunieciuOstatniegoZnaku);
-                                }
-                            }
-                            else
-                            {
-                                editText.setText(poUsunieciuOstatniegoZnaku);
-                                rezultat = Double.parseDouble(poUsunieciuOstatniegoZnaku);
-                            }
-                        }
-                    }
-                    else //if(!editText.getText().toString().contains("E"))
-                    {
-                        skasujWszystko();
-                    }
-
-                }catch (Exception ignored){}
-
+                delete();
             break;
 
             case R.id.btnPerc:
-                /*if (!(coAktualnie == 0d && !czyJuzWypisanoRezultat)){
-                    coAktualnie = rezultat * coAktualnie / 100;
-                    editText.setText(fmt(coAktualnie));
-                }
-                else {
-                    editText.setText("0");
-                    rezultat = 0d;
-                }*/
-
+                percent();
             break;
 
             case R.id.btn1x:
-                oneX = true;
-                if (rezultat == 0d && !czyJuzWypisanoRezultat){
-                   nieMoznaDzielicPrzezZero();
-                }
-                else {
-                    if (plus || minus || div || multi){
-                        if(coAktualnie != 0d) {
-                            coAktualnie = 1 / coAktualnie;
-                            editText.setText(fmt(coAktualnie));
-                        }
-                        else{
-                            if((rezultat != 0d && !editText.getText().toString().equals("0")) || czyJuzWypisanoRezultat){
-                                coAktualnie = 1 / rezultat;
-                                editText.setText(fmt(coAktualnie));
-                                czyJuzWypisanoRezultat = false;
-                            }
-                            else{
-                                nieMoznaDzielicPrzezZero();
-                            }
-                        }
-                    }
-                    else {
-                        if(rezultat != 0d){
-                            rezultat = 1 / rezultat;
-                            editText.setText(fmt(rezultat));
-                        }
-                        else{
-                            nieMoznaDzielicPrzezZero();
-                        }
-                    }
-                }
-                czyJuzWypisanoRezultat = true;
+               oneX();
             break;
 
             case R.id.btnComma:
-                if (czyJuzWypisanoRezultat){
-                    czyJuzWypisanoRezultat = false;
-                    czySprobowanoPodzielicPrzez0 = false;
-                    czyAktualnyZPrzecinkiem = false;
-                    coAktualnie = 0d;
-                    editText.setText("0");
-                }
-
-                if (!editText.getText().toString().contains(".")){
-                   editText.setText(editText.getText()+".");
-                }
+                comma();
             break;
 
+        }
+    }
+
+    private void ce(){
+        if(plus || minus || div || multi){
+            coAktualnie = 0d;
+            editText.setText("0");
+        }
+        else {
+            skasujWszystko();
+        }
+
+    }
+
+
+    private void percent(){
+        percent = true;
+
+        if (!czyJuzWypisanoRezultat && !(plus || multi || div || minus)){
+            rezultat = 0d;
+            editText.setText("0");
+        }
+        else
+        {
+            if ((plus || minus || div || multi || oneX) && coAktualnie == 0d && Double.parseDouble(editText.getText().toString()) != 0d) {
+                if (oneX) {
+                    rezultat = 0d;
+                }
+                else{
+                    coAktualnie = rezultat * rezultat / 100;
+                }
+            }
+            else
+            {
+                coAktualnie = rezultat * coAktualnie / 100;
+            }
+
+            editText.setText(fmt(coAktualnie));
+            czyJuzWypisanoRezultat = true;
+        }
+    }
+
+    private void dzialanieArytmetyczne(){
+        wykonajOperacje();
+        zgasWszystkieDzialania();
+        czyJuzWypisanoRezultat = true;
+    }
+
+
+    private void comma(){
+        if (czyJuzWypisanoRezultat){
+            czyJuzWypisanoRezultat = false;
+            czySprobowanoPodzielicPrzez0 = false;
+            czyAktualnyZPrzecinkiem = false;
+            coAktualnie = 0d;
+            editText.setText("0");
+        }
+
+        if (!editText.getText().toString().contains(".")){
+            editText.setText(editText.getText()+".");
+        }
+    }
+
+
+    private void delete(){
+        try{
+            if (czyZawieraLiczboweZnaki()){
+                String poUsunieciuOstatniegoZnaku;
+
+                if (!czyJuzWypisanoRezultat){
+                    if (editText.getText().toString().length() > 1){
+                        poUsunieciuOstatniegoZnaku = removeLastChar(editText.getText().toString());
+                    }
+                    else
+                    {
+                        poUsunieciuOstatniegoZnaku = "0";
+                    }
+
+                    if (multi || div || plus || minus){
+                        coAktualnie = Double.parseDouble(poUsunieciuOstatniegoZnaku);
+                        if (!czyJuzWypisanoRezultat){
+                            editText.setText(poUsunieciuOstatniegoZnaku);
+                        }
+                    }
+                    else
+                    {
+                        editText.setText(poUsunieciuOstatniegoZnaku);
+                        rezultat = Double.parseDouble(poUsunieciuOstatniegoZnaku);
+                    }
+                }
+            }
+            else //if(!editText.getText().toString().contains("E"))
+            {
+                skasujWszystko();
+            }
+
+        }catch (Exception ignored){}
+    }
+
+
+    private void oneX(){
+        oneX = true;
+        if (rezultat == 0d && (!(plus || multi || div || minus) && !czyJuzWypisanoRezultat)){
+            nieMoznaDzielicPrzezZero();
+        }
+        else {
+            if (plus || minus || div || multi){
+                if(coAktualnie != 0d) {
+                    coAktualnie = 1 / coAktualnie;
+                    editText.setText(fmt(coAktualnie));
+                }
+                else{
+                    if((rezultat != 0d && Double.parseDouble(editText.getText().toString()) != 0d)){
+                        coAktualnie = 1 / rezultat;
+                        editText.setText(fmt(coAktualnie));
+                        czyJuzWypisanoRezultat = false;
+                    }
+                    else{
+                        nieMoznaDzielicPrzezZero();
+                    }
+                }
+            }
+            else {
+                if(rezultat != 0d){
+                    rezultat = 1 / rezultat;
+                    editText.setText(fmt(rezultat));
+                }
+                else{
+                    nieMoznaDzielicPrzezZero();
+                }
+            }
+        }
+        czyJuzWypisanoRezultat = true;
+    }
+
+
+    private void sprawdzCzyNieZaDlugi(String aktualnyNapis, Double aktualnyRezultat, Double aktualneCoAktualnie){
+        if (editText.getText().toString().replace(".","").length() > 11){
+            coAktualnie = aktualneCoAktualnie;
+            rezultat = aktualnyRezultat;
+            editText.setText(aktualnyNapis);
         }
     }
 
@@ -457,12 +492,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    public void wlaczLubWylaczPrzyciski(boolean onOFF){
+    private void wlaczLubWylaczPrzyciski(boolean onOFF){
         czyPrzyciskiSaWylaczone = !onOFF;
         btnPerc.setEnabled(onOFF);
         btn1x.setEnabled(onOFF);
         btnComma.setEnabled(onOFF);
-        btnPow.setEnabled(onOFF);
         btnSqrt.setEnabled(onOFF);
         btnDiv.setEnabled(onOFF);
         btnMulti.setEnabled(onOFF);
@@ -479,7 +513,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private boolean czyZawieraLiczboweZnaki(){
         return  !editText.getText().toString().equals("Infinity") &&
-                //!editText.getText().toString().contains("E") &&
                 !editText.getText().toString().equals("Nie można dzielić przez zero");
     }
 

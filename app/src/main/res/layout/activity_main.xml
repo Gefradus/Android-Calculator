@@ -28,11 +28,11 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:ems="10"
+                    android:focusable="false"
                     android:gravity="right|center_vertical"
                     android:inputType="textPersonName"
+                    android:background="@android:color/transparent"
                     android:paddingRight="10dp"
-                    android:textColorHighlight="#FFFFFF"
-                    android:textColorLink="#FFFFFF"
                     android:textCursorDrawable="@drawable/my_button"
                     android:textSize="24sp" />
             </LinearLayout>
@@ -50,7 +50,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button3"
-                android:text="MC" />
+                android:text="@string/mc" />
 
             <Button
                 android:id="@+id/btnMR"
@@ -58,7 +58,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button3"
-                android:text="MR" />
+                android:text="@string/mr" />
 
             <Button
                 android:id="@+id/btnMS"
@@ -66,7 +66,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button3"
-                android:text="MS" />
+                android:text="@string/ms" />
 
             <Button
                 android:id="@+id/btnMplus"
@@ -74,7 +74,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button3"
-                android:text="M+" />
+                android:text="@string/mplus" />
 
             <Button
                 android:id="@+id/btnMminus"
@@ -82,7 +82,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button3"
-                android:text="M-" />
+                android:text="@string/mminus" />
 
         </LinearLayout>
 
@@ -92,42 +92,34 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btnPerc"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/my_button2"
-                android:text="%"
-                android:textSize="19sp" />
-
-            <Button
                 android:id="@+id/btnCE"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button2"
-                android:text="CE"
+                android:text="@string/ce"
                 android:textSize="19sp" />
 
             <Button
                 android:id="@+id/btnC"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button2"
-                android:text="C"
+                android:text="@string/c"
                 android:textSize="19sp" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/btnDelete"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button2"
-
-                android:textSize="24sp"
-                android:textStyle="bold"
-                tools:text="←" />
+                android:cropToPadding="false"
+                android:padding="37dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/delbtn"
+                tools:src="@drawable/delbtn" />
         </LinearLayout>
 
         <LinearLayout
@@ -141,18 +133,17 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button2"
-                android:text="1/x"
+                android:text="@string/_1_x"
                 android:textAllCaps="false"
                 android:textSize="19sp" />
 
             <Button
-                android:id="@+id/btnPow"
+                android:id="@+id/btnPerc"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button2"
-                android:text="x²"
-                android:textAllCaps="false"
+                android:text="@string/procent"
                 android:textSize="19sp" />
 
             <Button
@@ -161,7 +152,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button2"
-                android:text="√x"
+                android:text="@string/pierwiastek"
                 android:textAllCaps="false"
                 android:textSize="19sp" />
 
@@ -171,7 +162,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button2"
-                android:text="÷"
+                android:text="@string/dzielenie"
                 android:textSize="19sp" />
         </LinearLayout>
 
@@ -186,7 +177,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button"
-                android:text="7"
+                android:text="@string/_7"
                 android:textColor="#422727"
                 android:textSize="19sp" />
 
@@ -196,7 +187,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button"
-                android:text="8"
+                android:text="@string/_8"
                 android:textColor="#422727"
                 android:textSize="19sp" />
 
@@ -206,7 +197,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button"
-                android:text="9"
+                android:text="@string/_9"
                 android:textColor="#422727"
                 android:textSize="19sp" />
 
@@ -216,7 +207,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button2"
-                android:text="*"
+                android:text="@string/mnozenie"
                 android:textAllCaps="false"
                 android:textSize="19sp" />
         </LinearLayout>
@@ -232,7 +223,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button"
-                android:text="4"
+                android:text="@string/_4"
                 android:textColor="#422727"
                 android:textSize="19sp" />
 
@@ -242,7 +233,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button"
-                android:text="5"
+                android:text="@string/_5"
                 android:textColor="#422727"
                 android:textSize="19sp" />
 
@@ -252,7 +243,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button"
-                android:text="6"
+                android:text="@string/_6"
                 android:textColor="#422727"
                 android:textSize="19sp" />
 
@@ -262,7 +253,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button2"
-                android:text="-"
+                android:text="@string/odejmowanie"
                 android:textSize="24sp" />
 
         </LinearLayout>
@@ -278,7 +269,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button"
-                android:text="1"
+                android:text="@string/_1"
                 android:textColor="#422727"
                 android:textSize="19sp" />
 
@@ -288,7 +279,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button"
-                android:text="2"
+                android:text="@string/_2"
                 android:textColor="#422727"
                 android:textSize="19sp" />
 
@@ -298,7 +289,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button"
-                android:text="3"
+                android:text="@string/_3"
                 android:textColor="#422727"
                 android:textSize="19sp" />
 
@@ -308,7 +299,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button2"
-                android:text="+"
+                android:text="@string/dodawanie"
                 android:textSize="19sp" />
         </LinearLayout>
 
@@ -323,7 +314,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button"
-                android:text="+/-"
+                android:text="@string/negacja"
                 android:textColor="#422727"
                 android:textSize="19sp" />
 
@@ -333,7 +324,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button"
-                android:text="0"
+                android:text="@string/_0"
                 android:textColor="#422727"
                 android:textSize="19sp" />
 
@@ -343,7 +334,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/my_button"
-                android:text="."
+                android:text="@string/kropka"
 
                 android:textColor="#422727"
                 android:textSize="24sp" />
@@ -354,7 +345,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#5CA4C5"
-                android:text="="
+                android:text="@string/rownosc"
                 android:textColor="@android:color/background_light"
                 android:textSize="19sp" />
         </LinearLayout>
