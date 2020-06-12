@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Boolean czySprobowanoPodzielicPrzez0;
     private Boolean czyAktualnyZPrzecinkiem;
     private Boolean czyPrzyciskiSaWylaczone, czyPrzyciskiMemorySaWylaczone;
+    private Boolean czyNiepowodzenieSQRT;
     private Double rezultat, coAktualnie;
     private Double memory;
 
@@ -366,32 +367,59 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(czyJuzWypisanoRezultat && czyDzialanieZapalone()){
             if(coAktualnie == 0d && Double.parseDouble(editText.getText().toString()) != 0)
             {
-                coAktualnie = Math.sqrt(rezultat);
-                editText.setText(fmt(coAktualnie));
+                coAktualnie = trySqrt(rezultat);
+                sprawdzCzyNiepowodzenieSQRT(coAktualnie);
+
             }
             else
             {
-                coAktualnie = Math.sqrt(coAktualnie);
-                editText.setText(fmt(coAktualnie));
+                coAktualnie = trySqrt(coAktualnie);
+                sprawdzCzyNiepowodzenieSQRT(coAktualnie);
             }
         }
         else
         {
             if (czyDzialanieZapalone())
             {
-                coAktualnie = Math.sqrt(coAktualnie);
-                editText.setText(fmt(coAktualnie));
+                coAktualnie = trySqrt(coAktualnie);
+                sprawdzCzyNiepowodzenieSQRT(coAktualnie);
             }
             else
             {
-                rezultat = Math.sqrt(rezultat);
-                editText.setText(fmt(rezultat));
+                rezultat = trySqrt(rezultat);
+                sprawdzCzyNiepowodzenieSQRT(rezultat);
             }
         }
 
         czyJuzWypisanoRezultat = true;
     }
 
+    private void sprawdzCzyNiepowodzenieSQRT(Double coWyswietlic){
+        if(!czyNiepowodzenieSQRT){
+            editText.setText(fmt(coWyswietlic));
+        }
+        else
+        {
+            czyNiepowodzenieSQRT = false;
+        }
+    }
+
+
+    private Double trySqrt(Double coSqrt)
+    {
+        if(!Double.isNaN(Math.sqrt(coSqrt)))
+        {
+            return Math.sqrt(coSqrt);
+        }
+        else
+        {
+            skasujWszystko();
+            wlaczLubWylaczPrzyciski(false);
+            editText.setText("Nieprawidłowe dane wejściowe");
+            czyNiepowodzenieSQRT = true;
+            return 0d;
+        }
+    }
 
     private void ce()
     {
@@ -454,6 +482,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             czyJuzWypisanoRezultat = false;
             czySprobowanoPodzielicPrzez0 = false;
+            czyNiepowodzenieSQRT = false;
             czyAktualnyZPrzecinkiem = false;
             coAktualnie = 0d;
             editText.setText("0");
@@ -575,6 +604,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void skasujWszystko()
     {
+        czyNiepowodzenieSQRT = false;
         czyJuzWypisanoRezultat = false;
         czySprobowanoPodzielicPrzez0 = false;
         czyAktualnyZPrzecinkiem = false;
@@ -615,8 +645,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnMC.setEnabled(onOFF);
         btnMS.setEnabled(onOFF);
         btnMR.setEnabled(onOFF);
-        if(onOFF && !czyPrzyciskiSaWylaczone){
-            wlaczLubWylaczPrzyciskiMemory(true);
+        if(onOFF && czyPrzyciskiMemorySaWylaczone){
+            wlaczLubWylaczPrzyciskiMemory(false);
         }
 
     }
@@ -624,7 +654,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean czyZawieraLiczboweZnaki()
     {
         return  !editText.getText().toString().equals("Infinity") &&
-                !editText.getText().toString().equals("Nie można dzielić przez zero");
+                !editText.getText().toString().equals("NaN") &&
+                !editText.getText().toString().equals("Nie można dzielić przez zero") &&
+                !editText.getText().toString().equals("Nieprawidłowe dane wejściowe");
     }
 
 }
