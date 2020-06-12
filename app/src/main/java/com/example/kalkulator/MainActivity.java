@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton btnDelete;
     private Button btnMminus, btnMC, btnMS, btnMR, btnMplus;
     private EditText editText;
-    private Boolean plus, minus, multi, div, equal, oneX, percent;
+    private Boolean plus, minus, multi, div, equal, oneX;
     private Boolean czyJuzWypisanoRezultat;
     private Boolean czySprobowanoPodzielicPrzez0;
     private Boolean czyAktualnyZPrzecinkiem;
@@ -99,10 +99,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private String format(double d){
-        if(editText.getText().toString().contains(".")){
+        if(editText.getText().toString().contains(".") && !equal){
             return editText.getText().toString();
         }
-        else{
+        else
+        {
             return fmt(d);
         }
     }
@@ -118,7 +119,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void wcisnietoLiczbe(String cyfra){
-        try{
+        try
+        {
             String aktualnyNapis = editText.getText().toString();
             Double aktualnyRezultat = rezultat;
             Double aktualneCoAktualnie = coAktualnie;
@@ -136,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         String aktualnaLiczba = format(rezultat);
                         aktualnaLiczba += cyfra;
                         editText.setText(aktualnaLiczba);
-                        if((editText.getText().toString().contains(".")) && (plus || minus || div || multi)){
+                        if((editText.getText().toString().contains(".")) && czyDzialanieZapalone()){
                             czyAktualnyZPrzecinkiem = true;
                         }
                         else
@@ -195,16 +197,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         div = false;
         equal = false;
         oneX  = false;
-        percent = false;
     }
 
-    private void wykonajDzialanie(){
+    private void wykonajDzialanie()
+    {
         oneX = false;
-
-        if (czyAktualnyZPrzecinkiem){
-            coAktualnie = Double.parseDouble(editText.getText().toString());
-            czyAktualnyZPrzecinkiem = false;
-        }
+        sprawdzCzyNieMaPrzecinka();
 
         if (plus)
         {
@@ -258,7 +256,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if(czyPrzyciskiSaWylaczone){
+        if(czyPrzyciskiSaWylaczone)
+        {
             wlaczLubWylaczPrzyciski(true);
             czyPrzyciskiSaWylaczone = false;
         }
@@ -292,7 +291,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             break;
             case R.id.btnEqual:
                 wykonajDzialanie();
-                if (!czySprobowanoPodzielicPrzez0) {
+                if (!czySprobowanoPodzielicPrzez0)
+                {
                     editText.setText(fmt(rezultat));
                     coAktualnie = 0d;
                     zgasWszystkieDzialania();
@@ -330,35 +330,74 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 comma();
             break;
 
+            case R.id.btnSqrt:
+                sqrt();
+            break;
         }
     }
 
-    private void ce(){
-        if(plus || minus || div || multi){
+
+    private void sqrt(){
+        sprawdzCzyNieMaPrzecinka();
+
+        if(czyJuzWypisanoRezultat && czyDzialanieZapalone()){
+            if(coAktualnie == 0d && Double.parseDouble(editText.getText().toString()) != 0){
+                coAktualnie = Math.sqrt(rezultat);
+                editText.setText(fmt(coAktualnie));
+            }
+            else
+            {
+                coAktualnie = Math.sqrt(coAktualnie);
+                editText.setText(fmt(coAktualnie));
+            }
+        }
+        else
+        {
+            if (czyDzialanieZapalone()){
+                coAktualnie = Math.sqrt(coAktualnie);
+                editText.setText(fmt(coAktualnie));
+            }
+            else
+            {
+                rezultat = Math.sqrt(rezultat);
+                editText.setText(fmt(rezultat));
+            }
+        }
+
+        czyJuzWypisanoRezultat = true;
+    }
+
+
+    private void ce()
+    {
+        if(czyDzialanieZapalone())
+        {
             coAktualnie = 0d;
             editText.setText("0");
         }
-        else {
+        else
+        {
             skasujWszystko();
         }
-
     }
 
 
-    private void percent(){
-        percent = true;
-
-        if (!czyJuzWypisanoRezultat && !(plus || multi || div || minus)){
+    private void percent()
+    {
+        if (!czyJuzWypisanoRezultat && !czyDzialanieZapalone())
+        {
             rezultat = 0d;
             editText.setText("0");
         }
         else
         {
-            if ((plus || minus || div || multi || oneX) && coAktualnie == 0d && Double.parseDouble(editText.getText().toString()) != 0d) {
-                if (oneX) {
+            if ((czyDzialanieZapalone() || oneX) && coAktualnie == 0d && Double.parseDouble(editText.getText().toString()) != 0d) {
+                if (oneX)
+                {
                     rezultat = 0d;
                 }
-                else{
+                else
+                {
                     coAktualnie = rezultat * rezultat / 100;
                 }
             }
@@ -372,15 +411,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void dzialanieArytmetyczne(){
+    private void dzialanieArytmetyczne()
+    {
         wykonajOperacje();
         zgasWszystkieDzialania();
         czyJuzWypisanoRezultat = true;
     }
 
 
-    private void comma(){
-        if (czyJuzWypisanoRezultat){
+    private void comma()
+    {
+        if(equal){
+         skasujWszystko();
+        }
+
+        if (czyJuzWypisanoRezultat)
+        {
             czyJuzWypisanoRezultat = false;
             czySprobowanoPodzielicPrzez0 = false;
             czyAktualnyZPrzecinkiem = false;
@@ -394,9 +440,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private void delete(){
-        try{
-            if (czyZawieraLiczboweZnaki()){
+    private void delete()
+    {
+        try
+        {
+            if (czyZawieraLiczboweZnaki())
+            {
                 String poUsunieciuOstatniegoZnaku;
 
                 if (!czyJuzWypisanoRezultat){
@@ -408,7 +457,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         poUsunieciuOstatniegoZnaku = "0";
                     }
 
-                    if (multi || div || plus || minus){
+                    if (czyDzialanieZapalone()){
                         coAktualnie = Double.parseDouble(poUsunieciuOstatniegoZnaku);
                         if (!czyJuzWypisanoRezultat){
                             editText.setText(poUsunieciuOstatniegoZnaku);
@@ -421,43 +470,56 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
             }
-            else //if(!editText.getText().toString().contains("E"))
+            else
             {
                 skasujWszystko();
             }
 
-        }catch (Exception ignored){}
+        }
+        catch (Exception ignored){ }
     }
 
 
-    private void oneX(){
+    private void oneX()
+    {
         oneX = true;
-        if (rezultat == 0d && (!(plus || multi || div || minus) && !czyJuzWypisanoRezultat)){
+        sprawdzCzyNieMaPrzecinka();
+
+        if (rezultat == 0d && (!czyDzialanieZapalone() && !czyJuzWypisanoRezultat))
+        {
             nieMoznaDzielicPrzezZero();
         }
-        else {
-            if (plus || minus || div || multi){
-                if(coAktualnie != 0d) {
+        else
+        {
+            if (czyDzialanieZapalone())
+            {
+                if(coAktualnie != 0d)
+                {
                     coAktualnie = 1 / coAktualnie;
                     editText.setText(fmt(coAktualnie));
                 }
-                else{
+                else
+                {
                     if((rezultat != 0d && Double.parseDouble(editText.getText().toString()) != 0d)){
                         coAktualnie = 1 / rezultat;
                         editText.setText(fmt(coAktualnie));
                         czyJuzWypisanoRezultat = false;
                     }
-                    else{
+                    else
+                    {
                         nieMoznaDzielicPrzezZero();
                     }
                 }
             }
-            else {
-                if(rezultat != 0d){
+            else
+            {
+                if(rezultat != 0d)
+                {
                     rezultat = 1 / rezultat;
                     editText.setText(fmt(rezultat));
                 }
-                else{
+                else
+                {
                     nieMoznaDzielicPrzezZero();
                 }
             }
@@ -465,8 +527,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         czyJuzWypisanoRezultat = true;
     }
 
+    private boolean czyDzialanieZapalone()
+    {
+        return plus || minus || multi || div;
+    }
 
-    private void sprawdzCzyNieZaDlugi(String aktualnyNapis, Double aktualnyRezultat, Double aktualneCoAktualnie){
+    private void sprawdzCzyNieMaPrzecinka(){
+        if (czyAktualnyZPrzecinkiem){
+            coAktualnie = Double.parseDouble(editText.getText().toString());
+            czyAktualnyZPrzecinkiem = false;
+        }
+    }
+
+    private void sprawdzCzyNieZaDlugi(String aktualnyNapis, Double aktualnyRezultat, Double aktualneCoAktualnie)
+    {
         if (editText.getText().toString().replace(".","").length() > 11){
             coAktualnie = aktualneCoAktualnie;
             rezultat = aktualnyRezultat;
@@ -474,7 +548,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void skasujWszystko(){
+    private void skasujWszystko()
+    {
         czyJuzWypisanoRezultat = false;
         czySprobowanoPodzielicPrzez0 = false;
         czyAktualnyZPrzecinkiem = false;
@@ -485,14 +560,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editText.setText("0");
     }
 
-    private void nieMoznaDzielicPrzezZero(){
+    private void nieMoznaDzielicPrzezZero()
+    {
         skasujWszystko();
         editText.setText("Nie można dzielić przez zero");
         wlaczLubWylaczPrzyciski(false);
     }
 
 
-    private void wlaczLubWylaczPrzyciski(boolean onOFF){
+    private void wlaczLubWylaczPrzyciski(boolean onOFF)
+    {
         czyPrzyciskiSaWylaczone = !onOFF;
         btnPerc.setEnabled(onOFF);
         btn1x.setEnabled(onOFF);
@@ -511,7 +588,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnMR.setEnabled(onOFF);
     }
 
-    private boolean czyZawieraLiczboweZnaki(){
+    private boolean czyZawieraLiczboweZnaki()
+    {
         return  !editText.getText().toString().equals("Infinity") &&
                 !editText.getText().toString().equals("Nie można dzielić przez zero");
     }
