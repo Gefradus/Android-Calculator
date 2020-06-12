@@ -11,7 +11,7 @@ import android.widget.ImageButton;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button btn1,btn2,btn3,btn4,btn5,btn6,btn7,btn8,btn9,btn0;
-    private Button btnPerc, btnC, btnCE, btn1x, btnSqrt, btnDiv, btnMulti, btnMinus, btnPlus, btnEqual, btnComma;
+    private Button btnPerc, btnC, btnCE, btn1x, btnSqrt, btnDiv, btnMulti, btnMinus, btnPlus, btnEqual, btnComma, btnNegate;
     private ImageButton btnDelete;
     private Button btnM_Minus, btnMC, btnMS, btnMR, btnM_Plus;
     private EditText editText;
@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findByView();
         setOnClickButtons();
         skasujWszystko();
+        memory = 0d;
         wlaczLubWylaczPrzyciskiMemory(false);
     }
 
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnCE = findViewById(R.id.btnCE);
         btnC = findViewById(R.id.btnC);
         btnComma = findViewById(R.id.btnComma);
+        btnNegate = findViewById(R.id.btnNegate);
         btnDelete = findViewById(R.id.btnDelete);
         btnSqrt = findViewById(R.id.btnSqrt);
         btnDiv = findViewById(R.id.btnDiv);
@@ -84,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn1x.setOnClickListener(this);
         btnCE.setOnClickListener(this);
         btnC.setOnClickListener(this);
+        btnNegate.setOnClickListener(this);
         btnComma.setOnClickListener(this);
         btnDelete.setOnClickListener(this);
         btnSqrt.setOnClickListener(this);
@@ -259,11 +262,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if(czyPrzyciskiSaWylaczone)
-        {
-            wlaczLubWylaczPrzyciski(true);
-            czyPrzyciskiSaWylaczone = false;
-        }
+        wlaczJesliPrzyciskiWylaczone();
 
         switch (v.getId()){
             case R.id.btn1: wcisnietoLiczbe("1"); break;
@@ -305,12 +304,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnMS: MS(); break;
             case R.id.btnMminus: M_Minus(); break;
             case R.id.btnMplus: M_Plus(); break;
+            case R.id.btnNegate: negate(); break;
         }
     }
 
+    private void negate()
+    {
+        Double zanegowanaLiczba = -Double.parseDouble(editText.getText().toString());
+
+        if(czyDzialanieZapalone())
+        {
+            coAktualnie = zanegowanaLiczba;
+            czyJuzWypisanoRezultat = false;
+        }
+        else
+        {
+            rezultat = zanegowanaLiczba;
+        }
+
+        editText.setText(fmt(zanegowanaLiczba));
+        //
+    }
 
     private void MR(){
-
         if(czyDzialanieZapalone())
         {
             coAktualnie = memory;
@@ -322,7 +338,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         editText.setText(fmt(memory));
-
     }
 
     private void MS(){
@@ -337,10 +352,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void M_Plus(){
         memory += Double.parseDouble(editText.getText().toString());
+        wlaczLubWylaczPrzyciskiMemory(true);
     }
 
     private void M_Minus(){
         memory -= Double.parseDouble(editText.getText().toString());
+        wlaczLubWylaczPrzyciskiMemory(true);
     }
 
     private void equal(){
@@ -415,7 +432,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             skasujWszystko();
             wlaczLubWylaczPrzyciski(false);
-            editText.setText("Nieprawidłowe dane wejściowe");
+            editText.setText("Złe dane wejściowe");
             czyNiepowodzenieSQRT = true;
             return 0d;
         }
@@ -586,6 +603,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return plus || minus || multi || div;
     }
 
+    private void wlaczJesliPrzyciskiWylaczone(){
+        if(czyPrzyciskiSaWylaczone)
+        {
+            wlaczLubWylaczPrzyciski(true);
+            czyPrzyciskiSaWylaczone = false;
+        }
+    }
+
     private void sprawdzCzyNieMaPrzecinka(){
         if (czyAktualnyZPrzecinkiem){
             coAktualnie = Double.parseDouble(editText.getText().toString());
@@ -645,6 +670,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnMC.setEnabled(onOFF);
         btnMS.setEnabled(onOFF);
         btnMR.setEnabled(onOFF);
+        btnNegate.setEnabled(onOFF);
         if(onOFF && czyPrzyciskiMemorySaWylaczone){
             wlaczLubWylaczPrzyciskiMemory(false);
         }
@@ -656,7 +682,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return  !editText.getText().toString().equals("Infinity") &&
                 !editText.getText().toString().equals("NaN") &&
                 !editText.getText().toString().equals("Nie można dzielić przez zero") &&
-                !editText.getText().toString().equals("Nieprawidłowe dane wejściowe");
+                !editText.getText().toString().equals("Złe dane wejściowe");
     }
 
 }
