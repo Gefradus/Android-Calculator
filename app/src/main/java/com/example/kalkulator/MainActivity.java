@@ -323,7 +323,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         editText.setText(fmt(zanegowanaLiczba));
-        //
+
     }
 
     private void MR(){
@@ -543,7 +543,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             else
             {
-                skasujWszystko();
+                if(!editText.getText().toString().contains("E")){
+                    skasujWszystko();
+                }
             }
 
         }
@@ -682,7 +684,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return  !editText.getText().toString().equals("Infinity") &&
                 !editText.getText().toString().equals("NaN") &&
                 !editText.getText().toString().equals("Nie można dzielić przez zero") &&
-                !editText.getText().toString().equals("Złe dane wejściowe");
+                !editText.getText().toString().equals("Złe dane wejściowe") &&
+                !editText.getText().toString().contains("E");
     }
 
 }
