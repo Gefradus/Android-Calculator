@@ -13,14 +13,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btn1,btn2,btn3,btn4,btn5,btn6,btn7,btn8,btn9,btn0;
     private Button btnPerc, btnC, btnCE, btn1x, btnSqrt, btnDiv, btnMulti, btnMinus, btnPlus, btnEqual, btnComma;
     private ImageButton btnDelete;
-    private Button btnMminus, btnMC, btnMS, btnMR, btnMplus;
+    private Button btnM_Minus, btnMC, btnMS, btnMR, btnM_Plus;
     private EditText editText;
     private Boolean plus, minus, multi, div, equal, oneX;
     private Boolean czyJuzWypisanoRezultat;
     private Boolean czySprobowanoPodzielicPrzez0;
     private Boolean czyAktualnyZPrzecinkiem;
-    private Boolean czyPrzyciskiSaWylaczone;
+    private Boolean czyPrzyciskiSaWylaczone, czyPrzyciskiMemorySaWylaczone;
     private Double rezultat, coAktualnie;
+    private Double memory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findByView();
         setOnClickButtons();
         skasujWszystko();
+        wlaczLubWylaczPrzyciskiMemory(false);
     }
 
 
@@ -57,9 +59,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnPlus = findViewById(R.id.btnPlus);
         btnEqual = findViewById(R.id.btnEqual);
         btnMinus = findViewById(R.id.btnMinus);
-        btnMminus = findViewById(R.id.btnMminus);
+        btnM_Minus = findViewById(R.id.btnMminus);
         btnPlus = findViewById(R.id.btnPlus);
-        btnMplus = findViewById(R.id.btnMplus);
+        btnM_Plus = findViewById(R.id.btnMplus);
         btnMC = findViewById(R.id.btnMC);
         btnMS = findViewById(R.id.btnMS);
         btnMR = findViewById(R.id.btnMR);
@@ -90,9 +92,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnPlus.setOnClickListener(this);
         btnEqual.setOnClickListener(this);
         btnMinus.setOnClickListener(this);
-        btnMminus.setOnClickListener(this);
+        btnM_Minus.setOnClickListener(this);
         btnPlus.setOnClickListener(this);
-        btnMplus.setOnClickListener(this);
+        btnM_Plus.setOnClickListener(this);
         btnMC.setOnClickListener(this);
         btnMS.setOnClickListener(this);
         btnMR.setOnClickListener(this);
@@ -289,50 +291,71 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dzialanieArytmetyczne();
                 multi = true;
             break;
-            case R.id.btnEqual:
-                wykonajDzialanie();
-                if (!czySprobowanoPodzielicPrzez0)
-                {
-                    editText.setText(fmt(rezultat));
-                    coAktualnie = 0d;
-                    zgasWszystkieDzialania();
-                    czyJuzWypisanoRezultat = true;
-                    equal = true;
-                }
-                else
-                {
-                    nieMoznaDzielicPrzezZero();
-                    czySprobowanoPodzielicPrzez0 = false;
-                }
-            break;
+            case R.id.btnEqual: equal();  break;
+            case R.id.btnC: skasujWszystko(); break;
+            case R.id.btnCE: ce(); break;
+            case R.id.btnDelete: delete(); break;
+            case R.id.btnPerc: percent(); break;
+            case R.id.btn1x: oneX(); break;
+            case R.id.btnComma: comma(); break;
+            case R.id.btnSqrt: sqrt(); break;
+            case R.id.btnMC: MC(); break;
+            case R.id.btnMR: MR(); break;
+            case R.id.btnMS: MS(); break;
+            case R.id.btnMminus: M_Minus(); break;
+            case R.id.btnMplus: M_Plus(); break;
+        }
+    }
 
-            case R.id.btnC:
-               skasujWszystko();
-            break;
 
-            case R.id.btnCE:
-                ce();
-            break;
+    private void MR(){
 
-            case R.id.btnDelete:
-                delete();
-            break;
+        if(czyDzialanieZapalone())
+        {
+            coAktualnie = memory;
+            czyJuzWypisanoRezultat = false;
+        }
+        else
+        {
+            rezultat = memory;
+        }
 
-            case R.id.btnPerc:
-                percent();
-            break;
+        editText.setText(fmt(memory));
 
-            case R.id.btn1x:
-               oneX();
-            break;
+    }
 
-            case R.id.btnComma:
-                comma();
-            break;
+    private void MS(){
+        memory = Double.parseDouble(editText.getText().toString());
+        wlaczLubWylaczPrzyciskiMemory(true);
+    }
 
-            case R.id.btnSqrt:
-                sqrt();
-            break;
+    private void MC(){
+        memory = 0d;
+        wlaczLubWylaczPrzyciskiMemory(false);
+    }
+
+    private void M_Plus(){
+        memory += Double.parseDouble(editText.getText().toString());
+    }
+
+    private void M_Minus(){
+        memory -= Double.parseDouble(editText.getText().toString());
+    }
+
+    private void equal(){
+        wykonajDzialanie();
+        if (!czySprobowanoPodzielicPrzez0)
+        {
+            editText.setText(fmt(rezultat));
+            coAktualnie = 0d;
+            zgasWszystkieDzialania();
+            czyJuzWypisanoRezultat = true;
+            equal = true;
+        }
+        else
+        {
+            nieMoznaDzielicPrzezZero();
+            czySprobowanoPodzielicPrzez0 = false;
         }
     }
 
@@ -341,7 +364,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         sprawdzCzyNieMaPrzecinka();
 
         if(czyJuzWypisanoRezultat && czyDzialanieZapalone()){
-            if(coAktualnie == 0d && Double.parseDouble(editText.getText().toString()) != 0){
+            if(coAktualnie == 0d && Double.parseDouble(editText.getText().toString()) != 0)
+            {
                 coAktualnie = Math.sqrt(rezultat);
                 editText.setText(fmt(coAktualnie));
             }
@@ -353,7 +377,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else
         {
-            if (czyDzialanieZapalone()){
+            if (czyDzialanieZapalone())
+            {
                 coAktualnie = Math.sqrt(coAktualnie);
                 editText.setText(fmt(coAktualnie));
             }
@@ -567,6 +592,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         wlaczLubWylaczPrzyciski(false);
     }
 
+    private void wlaczLubWylaczPrzyciskiMemory(boolean onOFF){
+        btnMR.setEnabled(onOFF);
+        btnMC.setEnabled(onOFF);
+        czyPrzyciskiMemorySaWylaczone = !onOFF;
+    }
+
 
     private void wlaczLubWylaczPrzyciski(boolean onOFF)
     {
@@ -579,13 +610,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnMulti.setEnabled(onOFF);
         btnMinus.setEnabled(onOFF);
         btnPlus.setEnabled(onOFF);
-        btnMinus.setEnabled(onOFF);
-        btnMminus.setEnabled(onOFF);
-        btnPlus.setEnabled(onOFF);
-        btnMplus.setEnabled(onOFF);
+        btnM_Minus.setEnabled(onOFF);
+        btnM_Plus.setEnabled(onOFF);
         btnMC.setEnabled(onOFF);
         btnMS.setEnabled(onOFF);
         btnMR.setEnabled(onOFF);
+        if(onOFF && !czyPrzyciskiSaWylaczone){
+            wlaczLubWylaczPrzyciskiMemory(true);
+        }
+
     }
 
     private boolean czyZawieraLiczboweZnaki()
